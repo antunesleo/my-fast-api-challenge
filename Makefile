@@ -2,10 +2,10 @@ build:
 	docker-compose build
 
 run:
-	docker-compose up
+	./bin/run.sh
 
 test:
-	docker-compose run api pytest
+	./bin/runtests.sh
 
 format:
 	black .
