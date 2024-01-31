@@ -1,12 +1,11 @@
 from typing import Annotated
 from fastapi import APIRouter, Depends, status, Security, HTTPException
 from fastapi.security import APIKeyHeader
-from pydantic import BaseModel
 from src.database import challenge_db
-from pymongo.database import Database
 from src.places.services import PlaceService
 from src.places.repositories import MongoPlaceRepository
 from src.places.pydantic_models import Place
+from src.settings import settings
 
 
 router = APIRouter()
@@ -14,7 +13,7 @@ api_key_header = APIKeyHeader(name="API-KEY")
 
 
 def validate_api_key(api_key_header: str = Security(api_key_header)) -> str:
-    if api_key_header == "youshallnotpass":
+    if api_key_header == settings.global_api_key:
         return api_key_header
     raise HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid API Key"
