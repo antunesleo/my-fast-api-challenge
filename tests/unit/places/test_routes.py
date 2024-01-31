@@ -1,6 +1,8 @@
 from fastapi.testclient import TestClient
 from src.main import app
 from src.places.routes import get_place_service
+from src.settings import settings
+
 
 client = TestClient(app)
 
@@ -18,6 +20,6 @@ def test_create_place_succeed(mocker):
     }
 
     response = client.post(
-        "/places", json=payload, headers={"API-KEY": "youshallnotpass"}
+        "/places", json=payload, headers={"API-KEY": settings.global_api_key}
     )
     assert response.status_code == 201
