@@ -6,4 +6,4 @@ mongo_client = MongoClient(
     username=settings.mongo_username,
     password=settings.mongo_password,
 )
-challenge_db = mongo_client.challenge
+

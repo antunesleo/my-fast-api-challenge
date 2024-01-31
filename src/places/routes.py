@@ -1,7 +1,7 @@
 from typing import Annotated
 from fastapi import APIRouter, Depends, status, Security, HTTPException
 from fastapi.security import APIKeyHeader
-from src.database import challenge_db
+from src.database import mongo_client
 from src.places.services import PlaceService
 from src.places.repositories import MongoPlaceRepository
 from src.places.pydantic_models import Place
@@ -21,7 +21,7 @@ def validate_api_key(api_key_header: str = Security(api_key_header)) -> str:
 
 
 def get_place_service() -> PlaceService:
-    return PlaceService(MongoPlaceRepository(challenge_db))
+    return PlaceService(MongoPlaceRepository(mongo_client.challenge_db))
 
 
 @router.post("/places", status_code=status.HTTP_201_CREATED)
