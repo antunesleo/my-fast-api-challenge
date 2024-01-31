@@ -13,6 +13,3 @@ class Settings(BaseSettings):
 
 
 settings = Settings()
-if settings.is_test:
-    raise ValueError("aaaaaaaaa")
-
