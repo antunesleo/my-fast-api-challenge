@@ -17,5 +17,7 @@ def test_create_place_succeed(mocker):
         "location": {"latitude": 12, "longitude": 11},
     }
 
-    response = client.post("/places", json=payload)
+    response = client.post(
+        "/places", json=payload, headers={"API-KEY": "youshallnotpass"}
+    )
     assert response.status_code == 201
