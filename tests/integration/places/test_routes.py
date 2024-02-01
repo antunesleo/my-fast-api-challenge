@@ -6,6 +6,7 @@ from src.settings import settings
 
 client = TestClient(app)
 
+
 class TestRouteCreatePlace:
     def test_when_succeed(mocker, mongo_database):
         payload = {
@@ -19,7 +20,7 @@ class TestRouteCreatePlace:
         )
         assert response.status_code == 201
         mongo_place = mongo_database.places.find_one({"name": "test"})
-        
+
         assert payload["name"] == mongo_place["name"]
         assert payload["description"] == mongo_place["description"]
         assert payload["location"] == mongo_place["location"]

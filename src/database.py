@@ -8,6 +8,7 @@ mongo_client = MongoClient(
     password=settings.mongo_password,
 )
 
+
 def get_mongo_database(is_test: bool) -> Database:
     database_name = "challenge"
     if is_test:
