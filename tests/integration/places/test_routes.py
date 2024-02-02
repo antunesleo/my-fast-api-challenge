@@ -1,6 +1,5 @@
 from fastapi.testclient import TestClient
 from src.main import app
-from src.database import get_mongo_database
 from src.settings import settings
 
 
