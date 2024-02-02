@@ -2,3 +2,4 @@ black
 pytest
 httpx
 pytest-mock
+factory_boy

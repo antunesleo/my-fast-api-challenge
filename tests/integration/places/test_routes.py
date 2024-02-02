@@ -1,4 +1,5 @@
 from fastapi.testclient import TestClient
+import pytest
 from src.main import app
 from src.settings import settings
 
@@ -6,6 +7,7 @@ from src.settings import settings
 client = TestClient(app)
 
 
+@pytest.mark.usefixtures("clean_database")
 class TestRouteCreatePlace:
     def test_when_succeed(mocker, mongo_database):
         payload = {

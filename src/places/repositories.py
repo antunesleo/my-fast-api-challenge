@@ -11,7 +11,7 @@ class PlaceRepository(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def list_with(self, offset: int, limit: int, name: Optional[str]) -> list[Place]:
+    def list_with(self, offset: int, limit: int, name: Optional[str] = None) -> list[Place]:
         raise NotImplementedError
 
 
@@ -31,7 +31,7 @@ class MongoPlaceRepository(PlaceRepository):
             }
         )
 
-    def list_with(self, offset: int, limit: int, name: Optional[str]) -> list[Place]:
+    def list_with(self, offset: int, limit: int, name: Optional[str] = None) -> list[Place]:
         filters = {}
         if name is not None:
             filters["name"] = name
