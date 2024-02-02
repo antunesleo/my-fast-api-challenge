@@ -60,9 +60,7 @@ class TestRouteCreatePlace:
 @pytest.mark.usefixtures("override_place_service_dependency")
 class TestRouteSearchPlace:
     def test_search_with_no_filter(self, place_service_mock):
-        response = client.get(
-            "/places", headers={"API-KEY": settings.global_api_key}
-        )
+        response = client.get("/places", headers={"API-KEY": settings.global_api_key})
         assert response.status_code == status.HTTP_200_OK
         place_service_mock.search.assert_called_once_with(1, 100, None)
 
