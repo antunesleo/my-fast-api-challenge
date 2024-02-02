@@ -1,12 +1,17 @@
 from abc import ABC, abstractmethod
+from typing import Optional
 from pymongo.database import Database
 
-from src.places.pydantic_models import Place
+from src.places.pydantic_models import Place, Location
 
 
 class PlaceRepository(ABC):
     @abstractmethod
     def add(self, place: Place) -> None:
+        raise NotImplementedError
+
+    @abstractmethod
+    def list_with(self, offset: int, limit: int, name: Optional[str]) -> list[Place]:
         raise NotImplementedError
 
 
@@ -25,3 +30,22 @@ class MongoPlaceRepository(PlaceRepository):
                 },
             }
         )
+
+    def list_with(self, offset: int, limit: int, name: Optional[str]) -> list[Place]:
+        filters = {}
+        if name is not None:
+            filters["name"] = name
+
+        places = []
+        for place_db in self.db.places.find(filters).skip(offset).limit(limit):
+            places.append(
+                Place(
+                    name=place_db["name"],
+                    description=place_db["description"],
+                    location=Location(
+                        latitude=place_db["location"]["latitude"],
+                        longitude=place_db["location"]["longitude"],
+                    ),
+                )
+            )
+        return places

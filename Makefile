@@ -2,7 +2,7 @@ build:
 	docker-compose build
 
 run:
-	./bin/run.sh
+	docker-compose up
 
 test:
 	./bin/runtests.sh

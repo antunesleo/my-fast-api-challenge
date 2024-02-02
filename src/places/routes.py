@@ -32,3 +32,14 @@ def create_places(
     api_key: str = Security(validate_api_key),
 ):
     service.create(place)
+
+
+@router.get("/places", status_code=status.HTTP_200_OK)
+def search_places(
+    service: Annotated[PlaceService, Depends(get_place_service)],
+    api_key: str = Security(validate_api_key),
+    offset: int = 1,
+    limit: int = 100,
+    name: str = None,
+):
+    return service.search(offset, limit, name)
