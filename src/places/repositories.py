@@ -11,7 +11,9 @@ class PlaceRepository(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def list_with(self, offset: int, limit: int, name: Optional[str] = None) -> list[Place]:
+    def list_with(
+        self, offset: int, limit: int, name: Optional[str] = None
+    ) -> list[Place]:
         raise NotImplementedError
 
 
@@ -31,13 +33,17 @@ class MongoPlaceRepository(PlaceRepository):
             }
         )
 
-    def list_with(self, offset: int, limit: int, name: Optional[str] = None) -> list[Place]:
+    def list_with(
+        self, offset: int, limit: int, name: Optional[str] = None
+    ) -> list[Place]:
         filters = {}
         if name is not None:
-            filters["name"] = name
+            filters["name"] = {"$regex": name, "$options": "i"}
 
         places = []
-        for place_db in self.db.places.find(filters).skip(offset).limit(limit):
+        for place_db in (
+            self.db.places.find(filters).skip(offset).limit(limit).sort("name")
+        ):
             places.append(
                 Place(
                     name=place_db["name"],
