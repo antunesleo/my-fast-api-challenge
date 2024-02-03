@@ -30,7 +30,18 @@ class TestRouteCreatePlace:
 
 @pytest.mark.usefixtures("clean_database")
 class TestSearchPlace:
-    def test_succeed_with_no_filter(mocker, mongo_database):
+    def assert_place(self, place_db, actual_place):
+        assert actual_place["name"] == place_db["name"]
+        assert actual_place["description"] == place_db["description"]
+        assert (
+            actual_place["location"]["latitude"] == place_db["location"]["latitude"]
+        )
+        assert (
+            actual_place["location"]["longitude"]
+            == place_db["location"]["longitude"]
+        )
+
+    def test_succeed_with_no_filter(self, mongo_database):
         place_db = PlaceDBFactory()
         mongo_database.places.insert_one(place_db)
         response = client.get("/places", headers={"API-KEY": settings.global_api_key})
@@ -38,12 +49,18 @@ class TestSearchPlace:
         actual_places = response.json()
         assert len(actual_places) == 1
 
-        assert actual_places[0]["name"] == place_db["name"]
-        assert actual_places[0]["description"] == place_db["description"]
-        assert (
-            actual_places[0]["location"]["latitude"] == place_db["location"]["latitude"]
+        self.assert_place(place_db, actual_places[0])
+
+
+    def test_succeed_filtering_by_name(self, mongo_database):
+        place_db = PlaceDBFactory()
+        mongo_database.places.insert_many([place_db, PlaceDBFactory()])
+        response = client.get(
+            "/places",
+            params={"name": place_db["name"]},
+            headers={"API-KEY": settings.global_api_key},
         )
-        assert (
-            actual_places[0]["location"]["longitude"]
-            == place_db["location"]["longitude"]
-        )
+        assert response.status_code == 200
+        actual_places = response.json()
+        assert len(actual_places) == 1
+        self.assert_place(place_db, actual_places[0])
