@@ -7,6 +7,6 @@ class LocationDBFactory(factory.DictFactory):
 
 
 class PlaceDBFactory(factory.DictFactory):
-    name = factory.Sequence(lambda n: 'Name {}'.format(n))
-    description = factory.Sequence(lambda n: 'Description {}'.format(n))
+    name = factory.Sequence(lambda n: "Name {}".format(n))
+    description = factory.Sequence(lambda n: "Description {}".format(n))
     location = factory.SubFactory(LocationDBFactory)

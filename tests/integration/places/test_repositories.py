@@ -62,9 +62,7 @@ class TestMongoPlaceRepository:
         mongo_place_repository: MongoPlaceRepository,
     ):
         place_db = PlaceDBFactory(name="zas")
-        mongo_database.places.insert_many(
-            [place_db, PlaceDBFactory(name="zes")]
-        )
+        mongo_database.places.insert_many([place_db, PlaceDBFactory(name="zes")])
         assert len([p for p in mongo_database.places.find()]) == 2
 
         actual_places = mongo_place_repository.list_with(0, 100, "za")

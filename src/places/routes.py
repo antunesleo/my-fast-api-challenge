@@ -38,7 +38,7 @@ def create_places(
 def search_places(
     service: Annotated[PlaceService, Depends(get_place_service)],
     api_key: str = Security(validate_api_key),
-    offset: int = 1,
+    offset: int = 0,
     limit: int = 100,
     name: str = None,
 ):
