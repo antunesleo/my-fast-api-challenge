@@ -33,8 +33,8 @@ class MongoPlaceRepository(PlaceRepository):
                 "name": place.name,
                 "description": place.description,
                 "location": {
-                    "latitude": place.location.latitude,
-                    "longitude": place.location.longitude,
+                    "type": "point",
+                    "coordinates": [place.location.longitude, place.location.latitude],
                 },
             }
         )

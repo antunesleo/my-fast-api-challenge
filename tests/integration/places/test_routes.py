@@ -25,7 +25,8 @@ class TestRouteCreatePlace:
 
         assert payload["name"] == mongo_place["name"]
         assert payload["description"] == mongo_place["description"]
-        assert payload["location"] == mongo_place["location"]
+        assert payload["location"]["longitude"] == mongo_place["location"]["coordinates"][0]
+        assert payload["location"]["latitude"] == mongo_place["location"]["coordinates"][1]
 
 
 @pytest.mark.usefixtures("clean_database")
