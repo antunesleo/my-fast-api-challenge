@@ -11,5 +11,15 @@ class PlaceService:
     def create(self, place: Place) -> None:
         self.repository.add(place)
 
-    def search(self, offset: int, limit: int, name: Optional[str]) -> list[Place]:
-        return self.repository.list_with(offset, limit, name)
+    def search(
+        self,
+        offset: int,
+        limit: int,
+        name: Optional[str] = None,
+        longitude: Optional[float] = None,
+        latitude: Optional[float] = None,
+        radius: Optional[int] = None,
+    ) -> list[Place]:
+        return self.repository.list_with(
+            offset, limit, name, longitude, latitude, radius
+        )

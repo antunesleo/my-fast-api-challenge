@@ -2,8 +2,8 @@ import factory
 
 
 class LocationDBFactory(factory.DictFactory):
-    latitude = 45.45
-    longitude = 46.46
+    type = "Point"
+    coordinates = [46.46, 45.45]
 
 
 class PlaceDBFactory(factory.DictFactory):

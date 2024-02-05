@@ -2,7 +2,7 @@ from fastapi.testclient import TestClient
 import pytest
 from src.main import app
 from src.settings import settings
-from tests.integration.places.factories import PlaceDBFactory
+from tests.integration.places.factories import LocationDBFactory, PlaceDBFactory
 
 
 client = TestClient(app)
@@ -30,15 +30,15 @@ class TestRouteCreatePlace:
 
 @pytest.mark.usefixtures("clean_database")
 class TestSearchPlace:
-    def assert_place(self, place_db, actual_place):
-        assert actual_place["name"] == place_db["name"]
-        assert actual_place["description"] == place_db["description"]
+    def assert_place_db_and_place_json(self, place_db, place_json):
+        assert place_json["name"] == place_db["name"]
+        assert place_json["description"] == place_db["description"]
         assert (
-            actual_place["location"]["latitude"] == place_db["location"]["latitude"]
+            place_json["location"]["latitude"] == place_db["location"]["coordinates"][1]
         )
         assert (
-            actual_place["location"]["longitude"]
-            == place_db["location"]["longitude"]
+            place_json["location"]["longitude"]
+            == place_db["location"]["coordinates"][0]
         )
 
     def test_succeed_with_no_filter(self, mongo_database):
@@ -49,8 +49,7 @@ class TestSearchPlace:
         actual_places = response.json()
         assert len(actual_places) == 1
 
-        self.assert_place(place_db, actual_places[0])
-
+        self.assert_place_db_and_place_json(place_db, actual_places[0])
 
     def test_succeed_filtering_by_name(self, mongo_database):
         place_db = PlaceDBFactory()
@@ -63,4 +62,24 @@ class TestSearchPlace:
         assert response.status_code == 200
         actual_places = response.json()
         assert len(actual_places) == 1
-        self.assert_place(place_db, actual_places[0])
+        self.assert_place_db_and_place_json(place_db, actual_places[0])
+
+    def test_succeed_filtering_by_location(self, mongo_database):
+        place_db_within_radius = PlaceDBFactory(
+            location=LocationDBFactory(coordinates=[-49.254984, -25.439095]),
+        )
+        place_db_outside_radius = PlaceDBFactory(
+            location=LocationDBFactory(coordinates=[-49.328086, -25.427196]),
+        )
+        mongo_database.places.insert_many(
+            [place_db_within_radius, place_db_outside_radius]
+        )
+        response = client.get(
+            "/places",
+            params={"longitude": -49.254337, "latitude": -25.439062, "radius": 500},
+            headers={"API-KEY": settings.global_api_key},
+        )
+        assert response.status_code == 200
+        actual_places = response.json()
+        assert len(actual_places) == 1
+        self.assert_place_db_and_place_json(place_db_within_radius, actual_places[0])

@@ -12,7 +12,13 @@ class PlaceRepository(ABC):
 
     @abstractmethod
     def list_with(
-        self, offset: int, limit: int, name: Optional[str] = None
+        self,
+        offset: int,
+        limit: int,
+        name: Optional[str] = None,
+        longitude: Optional[float] = None,
+        latitude: Optional[float] = None,
+        radius: Optional[float] = None,
     ) -> list[Place]:
         raise NotImplementedError
 
@@ -34,11 +40,26 @@ class MongoPlaceRepository(PlaceRepository):
         )
 
     def list_with(
-        self, offset: int, limit: int, name: Optional[str] = None
+        self,
+        offset: int,
+        limit: int,
+        name: Optional[str] = None,
+        longitude: Optional[float] = None,
+        latitude: Optional[float] = None,
+        radius: Optional[float] = None,
     ) -> list[Place]:
         filters = {}
         if name is not None:
             filters["name"] = {"$regex": name, "$options": "i"}
+
+        if longitude is not None and latitude is not None and radius is not None:
+            radius_kilometers = radius / 1000
+            radius_in_radians = radius_kilometers / 6378.1
+            filters["location"] = {
+                "$geoWithin": {
+                    "$centerSphere": [[longitude, latitude], radius_in_radians]
+                }
+            }
 
         places = []
         for place_db in (
@@ -49,8 +70,8 @@ class MongoPlaceRepository(PlaceRepository):
                     name=place_db["name"],
                     description=place_db["description"],
                     location=Location(
-                        latitude=place_db["location"]["latitude"],
-                        longitude=place_db["location"]["longitude"],
+                        latitude=place_db["location"]["coordinates"][1],
+                        longitude=place_db["location"]["coordinates"][0],
                     ),
                 )
             )

@@ -41,5 +41,8 @@ def search_places(
     offset: int = 0,
     limit: int = 100,
     name: str = None,
+    longitude: float = None,
+    latitude: float = None,
+    radius: int = None,
 ):
-    return service.search(offset, limit, name)
+    return service.search(offset, limit, name, longitude, latitude, radius)
