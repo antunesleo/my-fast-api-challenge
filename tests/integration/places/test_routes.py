@@ -8,9 +8,9 @@ from tests.integration.places.factories import LocationDBFactory, PlaceDBFactory
 client = TestClient(app)
 
 
-@pytest.mark.usefixtures("clean_database")
+@pytest.mark.usefixtures("test_mongo_db")
 class TestRouteCreatePlace:
-    def test_when_succeed(mocker, mongo_database):
+    def test_when_succeed(mocker, test_mongo_db):
         payload = {
             "name": "test",
             "description": "test",
@@ -21,7 +21,7 @@ class TestRouteCreatePlace:
             "/places", json=payload, headers={"API-KEY": settings.global_api_key}
         )
         assert response.status_code == 201
-        mongo_place = mongo_database.places.find_one({"name": "test"})
+        mongo_place = test_mongo_db.places.find_one({"name": "test"})
 
         assert payload["name"] == mongo_place["name"]
         assert payload["description"] == mongo_place["description"]
@@ -29,7 +29,7 @@ class TestRouteCreatePlace:
         assert payload["location"]["latitude"] == mongo_place["location"]["coordinates"][1]
 
 
-@pytest.mark.usefixtures("clean_database")
+@pytest.mark.usefixtures("test_mongo_db")
 class TestSearchPlace:
     def assert_place_db_and_place_json(self, place_db, place_json):
         assert place_json["name"] == place_db["name"]
@@ -42,9 +42,9 @@ class TestSearchPlace:
             == place_db["location"]["coordinates"][0]
         )
 
-    def test_succeed_with_no_filter(self, mongo_database):
+    def test_succeed_with_no_filter(self, test_mongo_db):
         place_db = PlaceDBFactory()
-        mongo_database.places.insert_one(place_db)
+        test_mongo_db.places.insert_one(place_db)
         response = client.get("/places", headers={"API-KEY": settings.global_api_key})
         assert response.status_code == 200
         actual_places = response.json()
@@ -52,9 +52,9 @@ class TestSearchPlace:
 
         self.assert_place_db_and_place_json(place_db, actual_places[0])
 
-    def test_succeed_filtering_by_name(self, mongo_database):
+    def test_succeed_filtering_by_name(self, test_mongo_db):
         place_db = PlaceDBFactory()
-        mongo_database.places.insert_many([place_db, PlaceDBFactory()])
+        test_mongo_db.places.insert_many([place_db, PlaceDBFactory()])
         response = client.get(
             "/places",
             params={"name": place_db["name"]},
@@ -65,14 +65,14 @@ class TestSearchPlace:
         assert len(actual_places) == 1
         self.assert_place_db_and_place_json(place_db, actual_places[0])
 
-    def test_succeed_filtering_by_location(self, mongo_database):
+    def test_succeed_filtering_by_location(self, test_mongo_db):
         place_db_within_radius = PlaceDBFactory(
             location=LocationDBFactory(coordinates=[-49.254984, -25.439095]),
         )
         place_db_outside_radius = PlaceDBFactory(
             location=LocationDBFactory(coordinates=[-49.328086, -25.427196]),
         )
-        mongo_database.places.insert_many(
+        test_mongo_db.places.insert_many(
             [place_db_within_radius, place_db_outside_radius]
         )
         response = client.get(
