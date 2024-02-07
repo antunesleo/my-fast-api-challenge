@@ -79,7 +79,9 @@ class TestRouteSearchPlace:
         place_service_mock.search.return_value = search_return_mock
         response = client.get("/places", headers={"API-KEY": settings.global_api_key})
         assert response.status_code == status.HTTP_200_OK
-        place_service_mock.search.assert_called_once_with(0, 100, None, None, None, None)
+        place_service_mock.search.assert_called_once_with(
+            0, 100, None, None, None, None
+        )
         actual_response = response.json()
         assert len(actual_response) == 1
         self.assert_place_json_and_place(actual_response[0], search_return_mock[0])
@@ -92,7 +94,9 @@ class TestRouteSearchPlace:
             headers={"API-KEY": settings.global_api_key},
         )
         assert response.status_code == status.HTTP_200_OK
-        place_service_mock.search.assert_called_once_with(0, 100, "namefilter", None, None, None)
+        place_service_mock.search.assert_called_once_with(
+            0, 100, "namefilter", None, None, None
+        )
         actual_response = response.json()
         assert len(actual_response) == 1
         self.assert_place_json_and_place(actual_response[0], search_return_mock[0])

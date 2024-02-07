@@ -33,7 +33,9 @@ class TestPlaceService:
         list_with_return = [MagicMock()]
         place_repository_mock.list_with.return_value = list_with_return
         actual_places = place_service.search(1, 10, "filter")
-        place_repository_mock.list_with.assert_called_once_with(1, 10, "filter", None, None, None)
+        place_repository_mock.list_with.assert_called_once_with(
+            1, 10, "filter", None, None, None
+        )
         assert actual_places == list_with_return
 
     def test_search_with_location(
@@ -41,6 +43,10 @@ class TestPlaceService:
     ):
         list_with_return = [MagicMock()]
         place_repository_mock.list_with.return_value = list_with_return
-        actual_places = place_service.search(1, 10, latitude=45.45, longitude=46.46, radius=500)
-        place_repository_mock.list_with.assert_called_once_with(1, 10, name=None, latitude=45.45, longitude=46.46, radius=500)
+        actual_places = place_service.search(
+            1, 10, latitude=45.45, longitude=46.46, radius=500
+        )
+        place_repository_mock.list_with.assert_called_once_with(
+            1, 10, name=None, latitude=45.45, longitude=46.46, radius=500
+        )
         assert actual_places == list_with_return

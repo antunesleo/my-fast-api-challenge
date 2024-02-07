@@ -14,7 +14,7 @@ def test_mongo_db(mocker):
     )
     dbname = str(uuid4())
     database = getattr(mongo_client, dbname)
-    database.places.create_index({ "name": "text", "description": "text" })
+    database.places.create_index({"name": "text", "description": "text"})
     mocker.patch("src.mockable_get_mongo_database", return_value=database)
     create_indexes()
     yield database

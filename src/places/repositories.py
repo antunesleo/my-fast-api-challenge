@@ -50,9 +50,7 @@ class MongoPlaceRepository(PlaceRepository):
     ) -> list[Place]:
         filters = {}
         if name is not None:
-            # filters["name"] = {"$regex": name, "$options": "i"}
-            filters["$text"] = { "$search": name }
-
+            filters["$text"] = {"$search": name}
 
         if longitude is not None and latitude is not None and radius is not None:
             radius_kilometers = radius / 1000
