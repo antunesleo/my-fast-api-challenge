@@ -1,2 +1,2 @@
 #! /bin/bash
-docker-compose run -e IS_TEST=true api pytest "$@"
+docker-compose run api pytest "$@"
