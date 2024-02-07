@@ -7,5 +7,8 @@ run:
 test:
 	./bin/runtests.sh
 
+coverage:
+	docker-compose run api pytest --cov=tests
+
 format:
 	black .

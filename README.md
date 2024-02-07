@@ -6,3 +6,15 @@ My implementation of the fast api challenge
 ```
 $ make run 
 ```
+
+## testing
+
+```
+$ make test 
+```
+
+## coverage
+
+```
+$ make coverage 
+```
