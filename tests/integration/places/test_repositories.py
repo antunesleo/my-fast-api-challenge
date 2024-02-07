@@ -61,11 +61,11 @@ class TestMongoPlaceRepository:
         test_mongo_db: Database,
         mongo_place_repository: MongoPlaceRepository,
     ):
-        place_db = PlaceDBFactory(name="zas")
-        test_mongo_db.places.insert_many([place_db, PlaceDBFactory(name="zes")])
+        place_db = PlaceDBFactory(name="zas zes")
+        test_mongo_db.places.insert_many([place_db, PlaceDBFactory(name="zes zis")])
         assert len([p for p in test_mongo_db.places.find()]) == 2
 
-        actual_places = mongo_place_repository.list_with(0, 100, "za")
+        actual_places = mongo_place_repository.list_with(0, 100, "zas")
 
         assert len(actual_places) == 1
         self.assert_place(place_db, actual_places[0])

@@ -9,7 +9,5 @@ class Settings(BaseSettings):
 
     global_api_key: str
 
-    is_test: bool = False
-
 
 settings = Settings()

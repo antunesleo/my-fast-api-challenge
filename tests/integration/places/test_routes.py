@@ -53,8 +53,8 @@ class TestSearchPlace:
         self.assert_place_db_and_place_json(place_db, actual_places[0])
 
     def test_succeed_filtering_by_name(self, test_mongo_db):
-        place_db = PlaceDBFactory()
-        test_mongo_db.places.insert_many([place_db, PlaceDBFactory()])
+        place_db = PlaceDBFactory(name="zes")
+        test_mongo_db.places.insert_many([place_db, PlaceDBFactory(name="zas")])
         response = client.get(
             "/places",
             params={"name": place_db["name"]},

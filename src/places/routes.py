@@ -21,7 +21,7 @@ def validate_api_key(api_key_header: str = Security(api_key_header)) -> str:
 
 
 def get_place_service() -> PlaceService:
-    database = get_mongo_database(settings.is_test)
+    database = get_mongo_database()
     return PlaceService(MongoPlaceRepository(database))
 
 
