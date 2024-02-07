@@ -1,5 +1,5 @@
-black
-pytest
-httpx
-pytest-mock
-factory_boy
+black==24.1.1
+pytest==8.0.0
+httpx==0.26.0
+pytest-mock==3.12.0
+factory-boy==3.3.0
